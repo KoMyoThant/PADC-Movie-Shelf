@@ -1,5 +1,9 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="nav_header_vertical_spacing">8dp</dimen>
+    <dimen name="nav_header_height">176dp</dimen>
 
     <!--You can assign pre-defined values without screen implementation-->
     <!-- Generic with ratio -->
@@ -35,6 +39,6 @@
 
     <!-- App Specific values -->
     <dimen name="movie_cover_height">240dp</dimen>
-    <dimen name="movie_cover_width">180dp</dimen>
+    <dimen name="movie_cover_width">160dp</dimen>
     <dimen name="size_tappable_small">48dp</dimen>
 </resources>

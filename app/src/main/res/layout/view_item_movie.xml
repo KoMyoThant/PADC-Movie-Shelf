@@ -10,14 +10,16 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingRight="@dimen/margin_medium">
 
         <ImageView
             android:id="@+id/iv_movie_cover"
             android:layout_width="@dimen/movie_cover_width"
             android:layout_height="match_parent"
             android:layout_marginRight="@dimen/margin_medium"
-            android:src="@drawable/img_movie_cover_placeholder" />
+            android:src="@drawable/img_movie_cover_placeholder"
+            android:scaleType="fitXY"/>
 
         <TextView
             android:id="@+id/tv_movie_name"
@@ -67,7 +69,6 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:layout_marginBottom="@dimen/margin_medium"
-            android:layout_marginRight="@dimen/margin_medium"
             android:background="@color/primary_dark"
             android:paddingLeft="@dimen/margin_medium_2"
             android:paddingRight="@dimen/margin_medium_2"
