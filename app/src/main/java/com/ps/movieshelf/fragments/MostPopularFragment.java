@@ -17,6 +17,7 @@ import com.ps.movieshelf.adapters.MoviesAdapter;
  */
 
 public class MostPopularFragment extends Fragment {
+    // UI Elements
     private RecyclerView rvMovies;
     private MoviesAdapter moviesAdapter;
 
@@ -27,8 +28,10 @@ public class MostPopularFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.frag_most_popular, container, false);
 
+        // Linking UIs with control elements
         findViewsByID();
 
+        // Recyclerview setup
         rvMovies.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         moviesAdapter = new MoviesAdapter(getContext());
         rvMovies.setAdapter(moviesAdapter);

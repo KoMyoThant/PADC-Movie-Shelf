@@ -36,13 +36,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         context = this;
 
+        // Linking UIs with control elements
         findViewsByID();
 
+        // Viewpager with fragment
         tabPagerAdapter = new TabPagerAdapter(getSupportFragmentManager());
         vpMoviesTab.setAdapter(tabPagerAdapter);
 
         tlTabs.setupWithViewPager(vpMoviesTab);
 
+        // FAB
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
+        // Navigation drawer
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -90,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return super.onOptionsItemSelected(item);
     }
 
+    // Navigation drawer
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {

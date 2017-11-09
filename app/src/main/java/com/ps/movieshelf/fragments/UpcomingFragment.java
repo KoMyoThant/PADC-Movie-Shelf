@@ -18,6 +18,7 @@ import com.ps.movieshelf.adapters.MoviesAdapter;
  */
 
 public class UpcomingFragment extends Fragment {
+    // UI elements
     private RecyclerView rvMovies;
     private MoviesAdapter moviesAdapter;
 
@@ -33,8 +34,10 @@ public class UpcomingFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.frag_upcoming, container, false);
 
+        // Linking UIs with control elements
         findViewsByID();
 
+        // Recyclerview setup
         rvMovies.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         moviesAdapter = new MoviesAdapter(getContext());
         rvMovies.setAdapter(moviesAdapter);

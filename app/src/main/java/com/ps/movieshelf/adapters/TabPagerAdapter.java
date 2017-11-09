@@ -13,6 +13,7 @@ import com.ps.movieshelf.fragments.UpcomingFragment;
  */
 
 public class TabPagerAdapter extends FragmentPagerAdapter {
+    // Tab NO and Tab title
     private final int TAB_NUMBER = 3;
     private final String[] tabTitle = new String[]{"Now on Cinema", "Upcoming", "Most Popular"};
 
