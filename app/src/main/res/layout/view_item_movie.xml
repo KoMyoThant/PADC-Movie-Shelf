@@ -99,9 +99,9 @@
             android:layout_height="wrap_content"
             android:layout_alignBottom="@id/iv_movie_cover"
             android:layout_alignRight="@id/iv_movie_cover"
-            android:src="@drawable/ic_crop_free_white_24dp"
+            android:background="@color/transparent_background"
             android:padding="@dimen/margin_small"
-            android:background="@color/transparent_background"/>
+            android:src="@drawable/ic_crop_free_white_24dp" />
     </RelativeLayout>
 
 </android.support.v7.widget.CardView>
