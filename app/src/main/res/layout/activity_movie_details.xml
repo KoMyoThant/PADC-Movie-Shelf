@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true">
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:contentScrim="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/movie_details_toolbar_layout_height">
+
+                <ImageView
+                    android:id="@+id/iv_movie_background"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/img_movie_bg_placeholder" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_above="@+id/rate_view"
+                    android:background="@color/transparent"
+                    android:padding="@dimen/margin_medium" />
+
+                <ImageView
+                    android:id="@+id/iv_movie"
+                    android:layout_width="@dimen/movie_icon_width"
+                    android:layout_height="@dimen/movie_icon_height"
+                    android:layout_above="@id/rate_view"
+                    android:layout_marginBottom="@dimen/margin_medium"
+                    android:layout_marginLeft="@dimen/margin_medium_2"
+                    android:layout_weight="1"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/img_movie_cover_placeholder"
+                    android:transitionName="@string/transition_name_movie_logo" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@id/rate_view"
+                    android:layout_marginLeft="@dimen/margin_medium"
+                    android:layout_marginTop="@dimen/margin_medium_2"
+                    android:layout_toRightOf="@id/iv_movie"
+                    android:orientation="vertical">
+
+                    <android.support.v4.widget.NestedScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fillViewport="true">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/movie_detail_title"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/text_regular_3x" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/movie_details_data"
+                                android:textColor="@color/white" />
+                        </LinearLayout>
+                    </android.support.v4.widget.NestedScrollView>
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/iv_movie"
+                    android:layout_alignRight="@id/iv_movie"
+                    android:layout_marginBottom="@dimen/margin_large"
+                    android:background="@color/transparent"
+                    android:padding="@dimen/margin_card_medium"
+                    android:src="@drawable/ic_crop_free_24dp"
+                    android:transitionName="@string/transition_name_movie_view_logo" />
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/iv_favourite"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_favorite_24dp"
+                        android:transitionName="@string/transition_name_movie_rate_view" />
+
+                    <TextView
+                        android:id="@+id/tv_rate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="@dimen/margin_rating_text"
+                        android:text="7.4"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/text_regular_3x"
+                        android:textStyle="bold" />
+                </FrameLayout>
+
+                <LinearLayout
+                    android:id="@+id/rate_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/iv_movie_background"
+                    android:background="@android:drawable/screen_background_dark_transparent"
+                    android:orientation="vertical">
+
+                    <android.support.v7.widget.AppCompatRatingBar
+                        android:id="@+id/rb_movie"
+                        style="?android:attr/ratingBarStyleIndicator"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv_current_popularity_label"
+                        android:layout_marginStart="@dimen/margin_medium"
+                        android:layout_toEndOf="@id/iv_movie"
+                        android:rating="5"
+                        android:transitionName="@string/transition_name_movie_rating_bar" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_small"
+                        android:layout_marginLeft="@dimen/margin_medium_2"
+                        android:text="@string/tv_released_date"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/text_regular" />
+                </LinearLayout>
+            </RelativeLayout>
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/dark_brown"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/margin_xxlarge"
+                android:background="@color/light_brown"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/margin_large"
+                android:text="@string/txt_placeholder_movie_name"
+                android:textColor="@color/primary_text"
+                android:textStyle="bold"
+                android:transitionName="@string/transition_name_movie_name" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_medium_2"
+                android:layout_marginTop="@dimen/margin_medium">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_movie_details_genre"
+                    android:padding="@dimen/margin_small"
+                    android:text="@string/drama"
+                    android:textColor="@color/primary_text" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="@dimen/margin_medium"
+                    android:background="@color/white" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/margin_medium"
+                    android:background="@drawable/bg_movie_details_genre"
+                    android:padding="@dimen/margin_small"
+                    android:text="@string/crime"
+                    android:textColor="@color/primary_text" />
+            </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_medium_2"
+                android:layout_marginTop="@dimen/margin_medium">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_round_accent_border_2"
+                    android:padding="@dimen/margin_medium"
+                    android:text="@string/movie_time"
+                    android:textColor="@color/white" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.ps.movieshelf.components.SmartRecyclerView
+                    android:id="@+id/rv_movie_trailers"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/movie_trailers_rv_height"
+                    android:layout_marginTop="@dimen/margin_medium_2" />
+
+                <include
+                    android:id="@+id/vp_empty_movie"
+                    layout="@layout/view_pod_empty"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </FrameLayout>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_medium_2"
+                android:layout_marginTop="@dimen/margin_medium_2"
+                android:text="@string/reviews"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_regular_3x" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/text_margin"
+                android:text="@string/large_text"
+                android:textColor="@color/white" />
+        </LinearLayout>
+
+
+    </android.support.v4.widget.NestedScrollView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/fab_margin"
+        app:layout_anchor="@id/appbar_layout"
+        app:layout_anchorGravity="bottom|end"
+        app:srcCompat="@drawable/ic_add_white_24dp" />
+
+</android.support.design.widget.CoordinatorLayout>

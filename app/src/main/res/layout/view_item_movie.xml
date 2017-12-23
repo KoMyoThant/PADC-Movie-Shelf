@@ -19,7 +19,8 @@
             android:layout_height="match_parent"
             android:layout_marginRight="@dimen/margin_medium"
             android:scaleType="fitXY"
-            android:src="@drawable/img_movie_cover_placeholder" />
+            android:src="@drawable/img_movie_cover_placeholder"
+            android:transitionName="@string/transition_name_movie_logo"/>
 
         <TextView
             android:id="@+id/tv_movie_name"
@@ -29,7 +30,8 @@
             android:layout_toRightOf="@id/iv_movie_cover"
             android:text="Blade Runner 2049"
             android:textColor="@color/primary_text"
-            android:textSize="@dimen/text_regular_2x" />
+            android:textSize="@dimen/text_regular_2x"
+            android:transitionName="@string/transition_name_movie_name" />
 
         <TextView
             android:id="@+id/tv_movie_genre"
@@ -60,7 +62,8 @@
             android:layout_toRightOf="@id/iv_movie_cover"
             android:numStars="6"
             android:rating="6"
-            android:stepSize="0.5" />
+            android:stepSize="0.5"
+            android:transitionName="@string/transition_name_movie_rating_bar" />
 
         <Button
             android:id="@+id/btn_movie_overview"
@@ -82,7 +85,8 @@
                 android:id="@+id/iv_favourite"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_favorite_deep_orange_24dp" />
+                android:src="@drawable/ic_favorite_deep_orange_24dp"
+                android:transitionName="@string/transition_name_movie_rate_view"/>
 
             <TextView
                 android:id="@+id/tv_rating_count"
@@ -101,7 +105,8 @@
             android:layout_alignRight="@id/iv_movie_cover"
             android:background="@color/transparent_background"
             android:padding="@dimen/margin_small"
-            android:src="@drawable/ic_crop_free_white_24dp" />
+            android:src="@drawable/ic_crop_free_white_24dp"
+            android:transitionName="@string/transition_name_movie_view_logo"/>
     </RelativeLayout>
 
 </android.support.v7.widget.CardView>

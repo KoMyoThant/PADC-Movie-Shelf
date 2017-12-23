@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ps.movieshelf">
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".MovieShelfApp"
         android:allowBackup="true"
@@ -20,10 +23,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".activities.MovieDetailsActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <provider
             android:authorities="com.ps.movieshelf"
-            android:name=".data.provider.MovieShelfProvider"
+            android:name=".persistence.MovieShelfProvider"
             android:exported="false"
             android:syncable="true" />
     </application>
