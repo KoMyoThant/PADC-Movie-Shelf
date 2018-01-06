@@ -10,6 +10,7 @@ import com.ps.movieshelf.events.RestApiEvents;
 import com.ps.movieshelf.network.MovieDataAgentImpl;
 import com.ps.movieshelf.persistence.MovieShelfContract;
 import com.ps.movieshelf.utils.AppConstants;
+import com.ps.movieshelf.utils.ConfigUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -23,7 +24,7 @@ import java.util.List;
 
 public class MovieModel {
     private static MovieModel objectInstance;
-    private int moviePageIndex = 1;
+//    private int moviePageIndex = 1;
 
     private List<MovieVO> mMovies;
 
@@ -40,17 +41,18 @@ public class MovieModel {
     }
 
     public void startLoadingPopularMovies(Context context) {
-        MovieDataAgentImpl.getObjectInstance().loadPopularMovies(moviePageIndex, AppConstants.ACCESS_TOKEN, context);
+        MovieDataAgentImpl.getObjectInstance().loadPopularMovies(ConfigUtils.getObjInstance().loadPageIndex(), AppConstants.ACCESS_TOKEN, context);
     }
 
     public void loadMoreMovies(Context context) {
-        MovieDataAgentImpl.getObjectInstance().loadPopularMovies(moviePageIndex, AppConstants.ACCESS_TOKEN, context);
+        MovieDataAgentImpl.getObjectInstance().loadPopularMovies(ConfigUtils.getObjInstance().loadPageIndex(), AppConstants.ACCESS_TOKEN, context);
     }
 
 
     public void forceRefreshMovies(Context context) {
         mMovies = new ArrayList<>();
-        moviePageIndex = 1;
+//        moviePageIndex = 1;
+        ConfigUtils.getObjInstance().savePageIndex(1);
         startLoadingPopularMovies(context);
     }
 
@@ -61,7 +63,8 @@ public class MovieModel {
     @Subscribe
     public void onMoviesDataLoaded(RestApiEvents.MoviesDataLoadedEvent event) {
         mMovies.addAll(event.getLoadedMovies());
-        moviePageIndex = event.getLoadedPageIndex() + 1;
+//        moviePageIndex = event.getLoadedPageIndex() + 1;
+        ConfigUtils.getObjInstance().savePageIndex(event.getLoadedPageIndex());
 
         //TODO Logic to save the data in Persistence Layer
         ContentValues[] movieCVS = new ContentValues[event.getLoadedMovies().size()];
