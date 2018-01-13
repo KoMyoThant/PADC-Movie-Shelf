@@ -25,6 +25,8 @@ import com.ps.movieshelf.components.SmartVerticalScrollListener;
 import com.ps.movieshelf.data.models.MovieModel;
 import com.ps.movieshelf.data.vo.MovieVO;
 import com.ps.movieshelf.events.RestApiEvents;
+import com.ps.movieshelf.mvp.presenters.MovieListPresenter;
+import com.ps.movieshelf.mvp.views.MovieListView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -39,7 +41,7 @@ import butterknife.ButterKnife;
  * Created by pyaesone on 11/8/17.
  */
 
-public class MostPopularFragment extends BaseFragment {
+public class MostPopularFragment extends BaseFragment implements MovieListView {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -59,6 +61,8 @@ public class MostPopularFragment extends BaseFragment {
 
     @BindView(R.id.swipe_refresh_layout)
     SwipeRefreshLayout swipeRefreshLayout;
+
+    private MovieListPresenter mPresenter;
 
     public MostPopularFragment() {
         // Required empty public constructor
@@ -90,8 +94,12 @@ public class MostPopularFragment extends BaseFragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.frag_most_popular, container, false);
         ButterKnife.bind(this, view);
+
+        mPresenter = new MovieListPresenter(this);
+        mPresenter.onCreate();
+
         rvMostPopular.setHasFixedSize(true);
-        adapter = new MoviesAdapter(getContext(), this);
+        adapter = new MoviesAdapter(getContext(), mPresenter);
         rvMostPopular.setEmptyView(vpEmptyMovie);
         rvMostPopular.setAdapter(adapter);
         rvMostPopular.setLayoutManager(new LinearLayoutManager(container.getContext()));
@@ -99,7 +107,7 @@ public class MostPopularFragment extends BaseFragment {
         SmartVerticalScrollListener scrollListener = new SmartVerticalScrollListener(new SmartVerticalScrollListener.OnSmartVerticalScrollListener() {
             @Override
             public void onListEndReached() {
-                MovieModel.getInstance().loadMoreMovies(getContext());
+                mPresenter.onMovieListEndReach(getContext());
             }
         });
 
@@ -108,7 +116,7 @@ public class MostPopularFragment extends BaseFragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                MovieModel.getInstance().forceRefreshMovies(getContext());
+                mPresenter.onForceRefreshMovies(getContext());
             }
         });
 
@@ -119,13 +127,9 @@ public class MostPopularFragment extends BaseFragment {
     @Override
     public void onStart() {
         super.onStart();
+        mPresenter.onStart();
         EventBus.getDefault().register(this);
-        List<MovieVO> newsList = MovieModel.getInstance().getMovies();
-        if (!newsList.isEmpty()) {
-            adapter.setNewData(newsList);
-        } else {
-            swipeRefreshLayout.setRefreshing(true);
-        }
+
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -141,9 +145,28 @@ public class MostPopularFragment extends BaseFragment {
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mPresenter.onDestroy();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mPresenter.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mPresenter.onPause();
+    }
+
+    @Override
     public void onStop() {
         EventBus.getDefault().unregister(this);
         super.onStop();
+        mPresenter.onStop();
     }
 
 
@@ -159,24 +182,22 @@ public class MostPopularFragment extends BaseFragment {
     }
 
     @Override
-    public void onItemTap(View view) {
-        super.onItemTap(view);
-        Intent intent = MovieDetailsActivity.newIntent(getActivity().getApplicationContext());
-        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                // the context of the activity
-                getActivity(),
+    public void displayMovieList(List<MovieVO> movieList) {
+        adapter.setNewData(movieList);
+    }
 
-                new Pair<View, String>(view.findViewById(R.id.iv_movie),
-                        getString(R.string.transition_name_movie_logo)),
-                new Pair<View, String>(view.findViewById(R.id.tv_movie_name),
-                        getString(R.string.transition_name_movie_name)),
-                new Pair<View, String>(view.findViewById(R.id.rb_movie),
-                        getString(R.string.transition_name_movie_rating_bar)),
-                new Pair<View, String>(view.findViewById(R.id.tv_rate),
-                        getString(R.string.transition_name_movie_rate_view)),
-                new Pair<View, String>(view.findViewById(R.id.iv_barcode_scanner),
-                        getString(R.string.transition_name_movie_view_logo))
-        );
-        ActivityCompat.startActivity(getActivity(), intent, options.toBundle());
+    @Override
+    public void showLoading() {
+        swipeRefreshLayout.setRefreshing(true);
+    }
+
+    @Override
+    public void refreshMovieList() {
+
+    }
+
+    @Override
+    public void nevigateToMovieDetail(MovieVO movieVO) {
+
     }
 }

@@ -31,6 +31,8 @@ import com.ps.movieshelf.components.SmartVerticalScrollListener;
 import com.ps.movieshelf.data.models.MovieModel;
 import com.ps.movieshelf.data.vo.MovieVO;
 import com.ps.movieshelf.events.RestApiEvents;
+import com.ps.movieshelf.mvp.presenters.MovieListPresenter;
+import com.ps.movieshelf.mvp.views.MovieListView;
 import com.ps.movieshelf.persistence.MovieShelfContract;
 
 import org.greenrobot.eventbus.EventBus;
@@ -47,7 +49,7 @@ import butterknife.ButterKnife;
  * Created by pyaesone on 11/8/17.
  */
 
-public class NowCinemaFragment  extends BaseFragment implements LoaderManager.LoaderCallbacks<Cursor>{
+public class NowCinemaFragment extends BaseFragment implements LoaderManager.LoaderCallbacks<Cursor>, MovieListView {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -69,6 +71,8 @@ public class NowCinemaFragment  extends BaseFragment implements LoaderManager.Lo
 
     @BindView(R.id.swipe_refresh_layout)
     SwipeRefreshLayout swipeRefreshLayout;
+
+    private MovieListPresenter mPresenter;
 
     public NowCinemaFragment() {
         // Required empty public constructor
@@ -93,13 +97,34 @@ public class NowCinemaFragment  extends BaseFragment implements LoaderManager.Lo
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mPresenter.onDestroy();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mPresenter.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mPresenter.onResume();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.frag_now_cinema, container, false);
         ButterKnife.bind(this, view);
+
+        mPresenter = new MovieListPresenter(this);
+        mPresenter.onCreate();
         rvNowOnCinema.setHasFixedSize(true);
-        adapter = new MoviesAdapter(getContext(), this);
+        adapter = new MoviesAdapter(getContext(), mPresenter);
         rvNowOnCinema.setEmptyView(vpEmptyMovie);
         rvNowOnCinema.setAdapter(adapter);
         rvNowOnCinema.setLayoutManager(new LinearLayoutManager(container.getContext()));
@@ -107,7 +132,7 @@ public class NowCinemaFragment  extends BaseFragment implements LoaderManager.Lo
         SmartVerticalScrollListener scrollListener = new SmartVerticalScrollListener(new SmartVerticalScrollListener.OnSmartVerticalScrollListener() {
             @Override
             public void onListEndReached() {
-                MovieModel.getInstance().loadMoreMovies(getContext());
+                mPresenter.onMovieListEndReach(getContext());
             }
         });
 
@@ -116,7 +141,7 @@ public class NowCinemaFragment  extends BaseFragment implements LoaderManager.Lo
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                MovieModel.getInstance().forceRefreshMovies(getContext());
+                mPresenter.onForceRefreshMovies(getContext());
             }
         });
 
@@ -128,19 +153,15 @@ public class NowCinemaFragment  extends BaseFragment implements LoaderManager.Lo
     @Override
     public void onStart() {
         super.onStart();
+        mPresenter.onStart();
         EventBus.getDefault().register(this);
-        List<MovieVO> newsList = MovieModel.getInstance().getMovies();
-        if (!newsList.isEmpty()) {
-            adapter.setNewData(newsList);
-        } else {
-            swipeRefreshLayout.setRefreshing(true);
-        }
+        mPresenter.onStart();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMovieDataLoaded(RestApiEvents.MoviesDataLoadedEvent event) {
-        adapter.appendNewData(event.getLoadedMovies());
-        swipeRefreshLayout.setRefreshing(false);
+//        adapter.appendNewData(event.getLoadedMovies());
+//        swipeRefreshLayout.setRefreshing(false);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -166,27 +187,7 @@ public class NowCinemaFragment  extends BaseFragment implements LoaderManager.Lo
         super.onDetach();
     }
 
-    @Override
-    public void onItemTap(View view) {
-        super.onItemTap(view);
-        Intent intent = MovieDetailsActivity.newIntent(getActivity().getApplicationContext());
-        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                // the context of the activity
-                getActivity(),
 
-                new Pair<View, String>(view.findViewById(R.id.iv_movie_cover),
-                        getString(R.string.transition_name_movie_logo)),
-                new Pair<View, String>(view.findViewById(R.id.tv_movie_name),
-                        getString(R.string.transition_name_movie_name)),
-                new Pair<View, String>(view.findViewById(R.id.rb_current_popularity),
-                        getString(R.string.transition_name_movie_rating_bar)),
-                new Pair<View, String>(view.findViewById(R.id.tv_rating_count),
-                        getString(R.string.transition_name_movie_rate_view)),
-                new Pair<View, String>(view.findViewById(R.id.iv_barcode_scanner),
-                        getString(R.string.transition_name_movie_view_logo))
-        );
-        ActivityCompat.startActivity(getActivity(), intent, options.toBundle());
-    }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
@@ -200,21 +201,33 @@ public class NowCinemaFragment  extends BaseFragment implements LoaderManager.Lo
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if (data != null && data.moveToFirst()) {
-            List<MovieVO> movieList = new ArrayList<>();
-            do {
-                MovieVO newsVO = MovieVO.parseFromCursor(data);
-                movieList.add(newsVO);
-            } while (data.moveToNext());
-
-            adapter.setNewData(movieList);
-            swipeRefreshLayout.setRefreshing(false);
-
-        }
+        mPresenter.onMovieLoadedFinished(data);
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
+    }
+
+    @Override
+    public void displayMovieList(List<MovieVO> movieList) {
+        adapter.setNewData(movieList);
+    }
+
+    @Override
+    public void showLoading() {
+        swipeRefreshLayout.setRefreshing(true);
+    }
+
+    @Override
+    public void refreshMovieList() {
+
+    }
+
+    @Override
+    public void nevigateToMovieDetail(MovieVO movieVO) {
+        Intent intent = MovieDetailsActivity.newIntent(getActivity().getApplicationContext());
+        startActivity(intent);
     }
 }

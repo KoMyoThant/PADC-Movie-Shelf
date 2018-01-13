@@ -36,6 +36,8 @@ public class MoviesViewHolder extends BaseViewHolder<MovieVO> {
 
     private MovieItemDeligate movieItemDeligate;
 
+    private MovieVO mData;
+
     public MoviesViewHolder(View itemView, MovieItemDeligate movieItemDeligate) {
         super(itemView);
         ButterKnife.bind(this, itemView);
@@ -44,7 +46,8 @@ public class MoviesViewHolder extends BaseViewHolder<MovieVO> {
     }
 
     @Override
-    public void setData(MovieVO mData) {
+    public void setData(MovieVO movieVO) {
+        this.mData = movieVO;
         tvMovieName.setText(mData.getTitle());
         tvRate.setText(mData.getVoteAverage() + "");
         RequestOptions requestOptions = new RequestOptions()
@@ -58,6 +61,6 @@ public class MoviesViewHolder extends BaseViewHolder<MovieVO> {
 
     @Override
     public void onClick(View view) {
-        movieItemDeligate.onItemTap(view);
+        movieItemDeligate.onItemTap(mData);
     }
 }

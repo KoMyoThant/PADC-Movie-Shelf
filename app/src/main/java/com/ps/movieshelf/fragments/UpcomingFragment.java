@@ -26,6 +26,8 @@ import com.ps.movieshelf.components.SmartVerticalScrollListener;
 import com.ps.movieshelf.data.models.MovieModel;
 import com.ps.movieshelf.data.vo.MovieVO;
 import com.ps.movieshelf.events.RestApiEvents;
+import com.ps.movieshelf.mvp.presenters.MovieListPresenter;
+import com.ps.movieshelf.mvp.views.MovieListView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -40,7 +42,7 @@ import butterknife.ButterKnife;
  * Created by pyaesone on 11/8/17.
  */
 
-public class UpcomingFragment extends BaseFragment {
+public class UpcomingFragment extends BaseFragment implements MovieListView{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -60,6 +62,8 @@ public class UpcomingFragment extends BaseFragment {
 
     @BindView(R.id.swipe_refresh_layout)
     SwipeRefreshLayout swipeRefreshLayout;
+
+    private MovieListPresenter mPresenter;
 
     public UpcomingFragment() {
         // Required empty public constructor
@@ -89,8 +93,11 @@ public class UpcomingFragment extends BaseFragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.frag_upcoming, container, false);
         ButterKnife.bind(this, view);
+
+        mPresenter = new MovieListPresenter(this);
+
         rvUpcoming.setHasFixedSize(true);
-        adapter = new MoviesAdapter(getContext(), this);
+        adapter = new MoviesAdapter(getContext(), mPresenter);
         rvUpcoming.setEmptyView(vpEmptyMovie);
         rvUpcoming.setAdapter(adapter);
         rvUpcoming.setLayoutManager(new LinearLayoutManager(container.getContext()));
@@ -156,24 +163,22 @@ public class UpcomingFragment extends BaseFragment {
     }
 
     @Override
-    public void onItemTap(View view) {
-        super.onItemTap(view);
+    public void displayMovieList(List<MovieVO> movieList) {
 
-        Intent intent = MovieDetailsActivity.newIntent(getActivity().getApplicationContext());
-        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                // the context of the activity
-                getActivity(),
-                new Pair<View, String>(view.findViewById(R.id.iv_movie),
-                        getString(R.string.transition_name_movie_logo)),
-                new Pair<View, String>(view.findViewById(R.id.tv_movie_name),
-                        getString(R.string.transition_name_movie_name)),
-                new Pair<View, String>(view.findViewById(R.id.rb_movie),
-                        getString(R.string.transition_name_movie_rating_bar)),
-                new Pair<View, String>(view.findViewById(R.id.tv_rate),
-                        getString(R.string.transition_name_movie_rate_view)),
-                new Pair<View, String>(view.findViewById(R.id.iv_barcode_scanner),
-                        getString(R.string.transition_name_movie_view_logo))
-        );
-        ActivityCompat.startActivity(getActivity(), intent, options.toBundle());
+    }
+
+    @Override
+    public void showLoading() {
+
+    }
+
+    @Override
+    public void refreshMovieList() {
+
+    }
+
+    @Override
+    public void nevigateToMovieDetail(MovieVO movieVO) {
+
     }
 }
