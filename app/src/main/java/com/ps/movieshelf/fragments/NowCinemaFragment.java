@@ -22,6 +22,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.ps.movieshelf.MovieShelfApp;
 import com.ps.movieshelf.R;
 import com.ps.movieshelf.activities.MovieDetailsActivity;
 import com.ps.movieshelf.adapters.MoviesAdapter;
@@ -41,6 +42,8 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -72,7 +75,8 @@ public class NowCinemaFragment extends BaseFragment implements LoaderManager.Loa
     @BindView(R.id.swipe_refresh_layout)
     SwipeRefreshLayout swipeRefreshLayout;
 
-    private MovieListPresenter mPresenter;
+    @Inject
+    MovieListPresenter mPresenter;
 
     public NowCinemaFragment() {
         // Required empty public constructor
@@ -94,6 +98,11 @@ public class NowCinemaFragment extends BaseFragment implements LoaderManager.Loa
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        MovieShelfApp movieShelfApp = (MovieShelfApp) getActivity().getApplicationContext();
+        movieShelfApp.getMovieShelfAppComponent().inject(this);
+
+        mPresenter.onCreate(this);
     }
 
     @Override
@@ -121,8 +130,8 @@ public class NowCinemaFragment extends BaseFragment implements LoaderManager.Loa
         View view = inflater.inflate(R.layout.frag_now_cinema, container, false);
         ButterKnife.bind(this, view);
 
-        mPresenter = new MovieListPresenter(this);
-        mPresenter.onCreate();
+        mPresenter.onCreateView();
+
         rvNowOnCinema.setHasFixedSize(true);
         adapter = new MoviesAdapter(getContext(), mPresenter);
         rvNowOnCinema.setEmptyView(vpEmptyMovie);
@@ -153,7 +162,6 @@ public class NowCinemaFragment extends BaseFragment implements LoaderManager.Loa
     @Override
     public void onStart() {
         super.onStart();
-        mPresenter.onStart();
         EventBus.getDefault().register(this);
         mPresenter.onStart();
     }
@@ -179,14 +187,13 @@ public class NowCinemaFragment extends BaseFragment implements LoaderManager.Loa
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        MovieModel.getInstance().startLoadingPopularMovies(getContext());
+//        MovieModel.getInstance(context).startLoadingPopularMovies(getContext());
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
     }
-
 
 
     @Override
@@ -202,7 +209,6 @@ public class NowCinemaFragment extends BaseFragment implements LoaderManager.Loa
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mPresenter.onMovieLoadedFinished(data);
-        swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
@@ -213,6 +219,7 @@ public class NowCinemaFragment extends BaseFragment implements LoaderManager.Loa
     @Override
     public void displayMovieList(List<MovieVO> movieList) {
         adapter.setNewData(movieList);
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
@@ -229,5 +236,10 @@ public class NowCinemaFragment extends BaseFragment implements LoaderManager.Loa
     public void nevigateToMovieDetail(MovieVO movieVO) {
         Intent intent = MovieDetailsActivity.newIntent(getActivity().getApplicationContext());
         startActivity(intent);
+    }
+
+    @Override
+    public Context getViewContext() {
+        return getActivity().getApplicationContext();
     }
 }

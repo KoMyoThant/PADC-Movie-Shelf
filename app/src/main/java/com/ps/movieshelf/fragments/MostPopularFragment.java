@@ -95,8 +95,8 @@ public class MostPopularFragment extends BaseFragment implements MovieListView {
         View view = inflater.inflate(R.layout.frag_most_popular, container, false);
         ButterKnife.bind(this, view);
 
-        mPresenter = new MovieListPresenter(this);
-        mPresenter.onCreate();
+        mPresenter = new MovieListPresenter();
+        mPresenter.onCreate(this);
 
         rvMostPopular.setHasFixedSize(true);
         adapter = new MoviesAdapter(getContext(), mPresenter);
@@ -184,6 +184,7 @@ public class MostPopularFragment extends BaseFragment implements MovieListView {
     @Override
     public void displayMovieList(List<MovieVO> movieList) {
         adapter.setNewData(movieList);
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
@@ -199,5 +200,10 @@ public class MostPopularFragment extends BaseFragment implements MovieListView {
     @Override
     public void nevigateToMovieDetail(MovieVO movieVO) {
 
+    }
+
+    @Override
+    public Context getViewContext() {
+        return getContext();
     }
 }

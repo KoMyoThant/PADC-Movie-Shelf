@@ -4,6 +4,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.view.View;
 
+import com.ps.movieshelf.MovieShelfApp;
+import com.ps.movieshelf.dagger.MovieShelfAppComponent;
 import com.ps.movieshelf.data.models.MovieModel;
 import com.ps.movieshelf.data.vo.MovieVO;
 import com.ps.movieshelf.deligates.MovieItemDeligate;
@@ -12,21 +14,25 @@ import com.ps.movieshelf.mvp.views.MovieListView;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 /**
  * Created by pyaesone on 1/13/18.
  */
 
-public class MovieListPresenter extends BasePresenter implements MovieItemDeligate {
+public class MovieListPresenter extends BasePresenter<MovieListView> implements MovieItemDeligate {
 
-    private MovieListView movieListView;
+//    private MovieListView movieListView;
 
-    public MovieListPresenter(MovieListView view) {
-        movieListView = view;
+    @Inject
+    MovieModel movieModel;
+
+    public MovieListPresenter() {
     }
 
     @Override
     public void onItemTap(MovieVO movieVO) {
-        movieListView.nevigateToMovieDetail(movieVO);
+        mView.nevigateToMovieDetail(movieVO);
     }
 
     @Override
@@ -40,12 +46,19 @@ public class MovieListPresenter extends BasePresenter implements MovieItemDeliga
     }
 
     @Override
+    public void onCreate(MovieListView mView) {
+        super.onCreate(mView);
+        MovieShelfApp movieShelfApp = (MovieShelfApp) mView.getViewContext();
+        movieShelfApp.getMovieShelfAppComponent().inject(this);
+    }
+
+    @Override
     public void onStart() {
-        List<MovieVO> movieList = MovieModel.getInstance().getMovies();
+        List<MovieVO> movieList = movieModel.getMovies();
         if (!movieList.isEmpty()) {
-            movieListView.displayMovieList(movieList);
+            mView.displayMovieList(movieList);
         } else {
-            movieListView.showLoading();
+            mView.showLoading();
         }
     }
 
@@ -55,12 +68,12 @@ public class MovieListPresenter extends BasePresenter implements MovieItemDeliga
     }
 
     public void onMovieListEndReach(Context context) {
-        MovieModel.getInstance().loadMoreMovies(context);
+        movieModel.loadMoreMovies(context);
 
     }
 
     public void onForceRefreshMovies(Context context) {
-        MovieModel.getInstance().forceRefreshMovies(context);
+        movieModel.forceRefreshMovies(context);
     }
 
     public void onMovieLoadedFinished(Cursor data) {
@@ -71,7 +84,7 @@ public class MovieListPresenter extends BasePresenter implements MovieItemDeliga
                 movieList.add(newsVO);
             } while (data.moveToNext());
 
-            movieListView.displayMovieList(movieList);
+            mView.displayMovieList(movieList);
         }
     }
 }

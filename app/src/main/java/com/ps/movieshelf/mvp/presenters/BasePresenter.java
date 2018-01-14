@@ -4,21 +4,33 @@ package com.ps.movieshelf.mvp.presenters;
  * Created by pyaesone on 1/7/18.
  */
 
-public abstract class BasePresenter {
+public abstract class BasePresenter<T> {
 
-//    T mView;
+    protected T mView;
 
-    public void onCreate(){
+    public void onCreate(T mView) {
+        this.mView = mView;
     }
+
+    public void onCreateView(){}
 
     public abstract void onStart();
 
-    public void onResume(){};
+    public void onResume() {
+    }
 
-    public void onPause(){};
+    ;
+
+    public void onPause() {
+    }
+
+    ;
 
     public abstract void onStop();
 
-    public void onDestroy(){};
+    public void onDestroy() {
+    }
+
+    ;
 
 }

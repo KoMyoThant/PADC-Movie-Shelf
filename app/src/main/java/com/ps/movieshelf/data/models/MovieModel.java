@@ -7,6 +7,7 @@ import android.util.Log;
 import com.ps.movieshelf.MovieShelfApp;
 import com.ps.movieshelf.data.vo.MovieVO;
 import com.ps.movieshelf.events.RestApiEvents;
+import com.ps.movieshelf.network.MovieDataAgent;
 import com.ps.movieshelf.network.MovieDataAgentImpl;
 import com.ps.movieshelf.persistence.MovieShelfContract;
 import com.ps.movieshelf.utils.AppConstants;
@@ -18,6 +19,8 @@ import org.greenrobot.eventbus.Subscribe;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 /**
  * Created by Dell on 12/6/2017.
  */
@@ -28,31 +31,41 @@ public class MovieModel {
 
     private List<MovieVO> mMovies;
 
-    private MovieModel() {
+    @Inject
+    MovieDataAgent mDataAgent;
+
+    @Inject
+    ConfigUtils mConfigUtil;
+
+    public MovieModel(Context context) {
         EventBus.getDefault().register(this);
         mMovies = new ArrayList<>();
+
+        MovieShelfApp movieShelfApp = (MovieShelfApp) context.getApplicationContext();
+        movieShelfApp.getMovieShelfAppComponent().inject(this);
+
     }
 
-    public static MovieModel getInstance() {
-        if (objectInstance == null) {
-            objectInstance = new MovieModel();
-        }
-        return objectInstance;
-    }
+//    public static MovieModel getInstance(Context context) {
+//        if (objectInstance == null) {
+//            objectInstance = new MovieModel(context);
+//        }
+//        return objectInstance;
+//    }
 
     public void startLoadingPopularMovies(Context context) {
-        MovieDataAgentImpl.getObjectInstance().loadPopularMovies(ConfigUtils.getObjInstance().loadPageIndex(), AppConstants.ACCESS_TOKEN, context);
+        mDataAgent.loadPopularMovies(mConfigUtil.loadPageIndex(), AppConstants.ACCESS_TOKEN, context);
     }
 
     public void loadMoreMovies(Context context) {
-        MovieDataAgentImpl.getObjectInstance().loadPopularMovies(ConfigUtils.getObjInstance().loadPageIndex(), AppConstants.ACCESS_TOKEN, context);
+        mDataAgent.loadPopularMovies(mConfigUtil.loadPageIndex(), AppConstants.ACCESS_TOKEN, context);
     }
 
 
     public void forceRefreshMovies(Context context) {
         mMovies = new ArrayList<>();
 //        moviePageIndex = 1;
-        ConfigUtils.getObjInstance().savePageIndex(1);
+        mConfigUtil.savePageIndex(1);
         startLoadingPopularMovies(context);
     }
 
@@ -64,7 +77,7 @@ public class MovieModel {
     public void onMoviesDataLoaded(RestApiEvents.MoviesDataLoadedEvent event) {
         mMovies.addAll(event.getLoadedMovies());
 //        moviePageIndex = event.getLoadedPageIndex() + 1;
-        ConfigUtils.getObjInstance().savePageIndex(event.getLoadedPageIndex());
+        mConfigUtil.savePageIndex(event.getLoadedPageIndex());
 
         //TODO Logic to save the data in Persistence Layer
         ContentValues[] movieCVS = new ContentValues[event.getLoadedMovies().size()];

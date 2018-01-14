@@ -1,5 +1,7 @@
 package com.ps.movieshelf.mvp.views;
 
+import android.content.Context;
+
 import com.ps.movieshelf.data.vo.MovieVO;
 
 import java.util.List;
@@ -17,4 +19,6 @@ public interface MovieListView {
     void refreshMovieList();
 
     void nevigateToMovieDetail(MovieVO movieVO);
+
+    Context getViewContext();
 }

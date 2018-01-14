@@ -42,7 +42,7 @@ import butterknife.ButterKnife;
  * Created by pyaesone on 11/8/17.
  */
 
-public class UpcomingFragment extends BaseFragment implements MovieListView{
+public class UpcomingFragment extends BaseFragment implements MovieListView {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -94,7 +94,7 @@ public class UpcomingFragment extends BaseFragment implements MovieListView{
         View view = inflater.inflate(R.layout.frag_upcoming, container, false);
         ButterKnife.bind(this, view);
 
-        mPresenter = new MovieListPresenter(this);
+        mPresenter = new MovieListPresenter();
 
         rvUpcoming.setHasFixedSize(true);
         adapter = new MoviesAdapter(getContext(), mPresenter);
@@ -105,7 +105,7 @@ public class UpcomingFragment extends BaseFragment implements MovieListView{
         SmartVerticalScrollListener scrollListener = new SmartVerticalScrollListener(new SmartVerticalScrollListener.OnSmartVerticalScrollListener() {
             @Override
             public void onListEndReached() {
-                MovieModel.getInstance().loadMoreMovies(getContext());
+//                MovieModel.getInstance(getContext()).loadMoreMovies(getContext());
             }
         });
 
@@ -114,7 +114,7 @@ public class UpcomingFragment extends BaseFragment implements MovieListView{
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                MovieModel.getInstance().forceRefreshMovies(getContext());
+//                MovieModel.getInstance(getContext()).forceRefreshMovies(getContext());
             }
         });
 
@@ -125,12 +125,12 @@ public class UpcomingFragment extends BaseFragment implements MovieListView{
     public void onStart() {
         super.onStart();
         EventBus.getDefault().register(this);
-        List<MovieVO> newsList = MovieModel.getInstance().getMovies();
-        if (!newsList.isEmpty()) {
-            adapter.setNewData(newsList);
-        } else {
-            swipeRefreshLayout.setRefreshing(true);
-        }
+//        List<MovieVO> newsList = MovieModel.getInstance(getContext()).getMovies();
+//        if (!newsList.isEmpty()) {
+//            adapter.setNewData(newsList);
+//        } else {
+//            swipeRefreshLayout.setRefreshing(true);
+//        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -180,5 +180,10 @@ public class UpcomingFragment extends BaseFragment implements MovieListView{
     @Override
     public void nevigateToMovieDetail(MovieVO movieVO) {
 
+    }
+
+    @Override
+    public Context getViewContext() {
+        return getContext();
     }
 }
